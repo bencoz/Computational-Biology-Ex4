@@ -1,10 +1,14 @@
 import numpy as np
 import math
-import sys
-
 from utils import mylog
 
 
+def viterbi_training(s, transitions, emissions):
+    # TODO:: Implement
+    pass
+
+
+# TODO:: Modify viterbi to be used by viterbi_training
 def viterbi(s, transitions, emissions):
     s_length = len(s)  # n.Rows
     num_of_states = len(emissions)  # k.Columns

@@ -1,14 +1,71 @@
 import numpy as np
 import math
-from utils import mylog
+from utils import mylog, build_emission_matrix, build_transition_matrix, print_model_params_header, print_model_params
 
 
-def viterbi_training(s, transitions, emissions):
-    # TODO:: Implement
-    pass
+def count_transitions_and_emissions(annotated_sequence):
+    prev_state = 0
+    T_IG, T_GI, E_IA, E_IT, E_IC, E_GA, E_GT, E_GC = 0, 0, 0, 0, 0, 0, 0, 0
+    sum_transition_from_intergenic = 0
+    sum_transition_from_gene = 0
+    sum_emission_gene = 0
+    sum_emission_int = 0
+    for item in annotated_sequence:
+        base = item[0]
+        state_num = item[1]
+        if state_num == 0:
+            sum_emission_int += 1
+            if base == 'A':
+                E_IA += 1
+            elif base == 'T':
+                E_IT += 1
+            elif base == 'C':
+                E_IC += 1
+        elif 2 <= state_num <= 4:
+            sum_emission_gene += 1
+            if base == 'A':
+                E_GA += 1
+            elif base == 'T':
+                E_GT += 1
+            elif base == 'C':
+                E_GC += 1
+
+        if prev_state == 0:
+            sum_transition_from_intergenic += 1
+            if state_num == 1:
+                T_IG += 1
+
+        if prev_state == 4:
+            sum_transition_from_gene += 1
+            if state_num == 5:
+                T_GI += 1
+
+        prev_state = state_num
+
+    return (T_IG / sum_transition_from_intergenic), (T_GI / sum_transition_from_gene), (E_IA / sum_emission_int), (
+            E_IT / sum_emission_int), (E_IC / sum_emission_int), (E_GA / sum_emission_gene), (
+                   E_GT / sum_emission_gene), (E_GC / sum_emission_gene)
 
 
-# TODO:: Modify viterbi to be used by viterbi_training
+def viterbi_training(s, transitions, emissions, epsilon):
+    reach_epsilon = False
+    previous_score = -math.inf
+    print_model_params_header()
+    while not reach_epsilon:
+        annotated_sequence, score = viterbi(s, transitions, emissions)
+        print_model_params(transitions, emissions, score)
+
+        T_IG, T_GI, E_IA, E_IT, E_IC, E_GA, E_GT, E_GC = count_transitions_and_emissions(annotated_sequence)
+
+        # update matrices
+        transitions = build_transition_matrix(T_IG, T_GI)
+        emissions = build_emission_matrix(E_IA, E_IT, E_IC, E_GA, E_GT, E_GC)
+
+        if math.fabs(score - previous_score) < epsilon:
+            reach_epsilon = True
+        previous_score = score
+
+
 def viterbi(s, transitions, emissions):
     s_length = len(s)  # n.Rows
     num_of_states = len(emissions)  # k.Columns
@@ -50,4 +107,4 @@ def viterbi(s, transitions, emissions):
 
     result.reverse()
 
-    return result
+    return result, last_column_max

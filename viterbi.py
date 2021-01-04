@@ -50,7 +50,7 @@ def count_transitions_and_emissions(annotated_sequence):
 def viterbi_training(s, transitions, emissions, epsilon):
     reach_epsilon = False
     previous_score = -math.inf
-    print_model_params_header()
+    print_model_params_header('V')
     while not reach_epsilon:
         annotated_sequence, score = viterbi(s, transitions, emissions)
         print_model_params(transitions, emissions, score)

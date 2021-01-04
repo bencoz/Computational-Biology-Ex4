@@ -1,6 +1,6 @@
 import sys
 from viterbi import viterbi_training
-# from .baum_welch import baum_welch
+from baum_welch import baum_welch
 from utils import build_transition_matrix, build_emission_matrix
 
 
@@ -12,7 +12,7 @@ def run_algorithm(algorithm, sequence, parameters, epsilon):
         viterbi_training(sequence, transition, emission, epsilon)
         pass
     elif algorithm == 'B':
-        # baum_welch(sequence, transition, emission, epsilon)
+        baum_welch(sequence, transition, emission, epsilon)
         pass
 
 

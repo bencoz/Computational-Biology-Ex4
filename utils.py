@@ -2,6 +2,14 @@ import math
 import numpy as np
 import sys
 
+states = {
+    'A': 0,
+    'C': 1,
+    'T': 2,
+    'G': 3
+}
+
+
 def mylog(x):
     try:
         res = math.log(x)
@@ -53,80 +61,3 @@ def print_model_params(transition, emission, score):
     score_str = format(score, '.4f')
     print(f"|\t{T_IG}\t{T_GI}\t{E_IA}\t{E_IT}\t{E_IC}\t{E_GA}\t{E_GT}\t{E_GC}\t\t{score_str}\t|")
 
-def forward(s, transitions, emissions):
-    s_length = len(s)  # n.Rows
-    num_of_states = len(emissions)  # k.Columns
-
-    f = np.zeros((num_of_states, s_length), dtype=float)
-
-    # initialize f[0, i]
-    # Regular
-    # f[0, 0] = 1
-    f[0, 0] = math.log(1)
-    for i in range(1, num_of_states):
-        # Regular
-        # f[i, 0] = 0
-        f[i, 0] = mylog(0)
-
-    for i in range(1, len(s)):
-        for j in range(0, num_of_states):
-            emission = emissions[j].get(s[i])
-            a_max = sys.float_info.min
-            a_l = []
-            for l in range(0, num_of_states):
-                curr = f[l, i - 1] + mylog(transitions[l, j])
-                if curr > a_max:
-                    a_max = curr
-                a_l.append(curr)
-
-                # Regular
-                # f[j, i] += f[l, i - 1] * transitions[l, j] * emission
-
-            f[j, i] = 0
-            for l in range(0, num_of_states):
-                b_l = a_l[l] - a_max
-                f[j, i] += math.exp(b_l)
-
-            f[j, i] = mylog(f[j, i]) + a_max + mylog(emission)
-
-    likelihood = 0
-    for i in range(0, num_of_states):
-        curr = f[i, len(s) - 1]
-        if curr > -math.inf:
-            likelihood += curr
-    #print(f"forward likelihood is: {likelihood}")
-    return f, likelihood
-
-def backward(s, transitions, emissions):
-    s_length = len(s)  # n.Rows
-    num_of_states = len(emissions)  # k.Columns
-
-    b = np.zeros((num_of_states, s_length), dtype=float)
-
-    # initialize b[n, i]
-    for i in range(0, num_of_states):
-        b[i, len(s) - 1] = math.log(1)  # The most left column
-
-    for i in reversed(range(0, len(s) - 1)):
-        for j in range(0, num_of_states):
-            a_max = sys.float_info.min
-            a_l = []
-            for l in range(0, num_of_states):
-                emission = emissions[l].get(s[i + 1])  # emission inserted into the "l" for because he is being dependent on l
-
-                curr = b[l, i + 1] + mylog(transitions[j, l]) + mylog(emission)
-                if curr > a_max:
-                    a_max = curr
-                a_l.append(curr)
-
-                # Regular
-                # b[j, i] += b[l, i + 1] * transition * emission
-
-            b[j, i] = 0
-            for l in range(0, num_of_states):
-                b_l = a_l[l] - a_max
-                b[j, i] += math.exp(b_l)
-
-            b[j, i] = mylog(b[j, i]) + a_max
-
-    return b

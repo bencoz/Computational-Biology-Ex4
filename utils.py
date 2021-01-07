@@ -10,6 +10,14 @@ states = {
 }
 
 
+def myexp(x):
+    res = math.exp(x)
+    if res == math.inf or res == -math.inf:
+        return 0
+    else:
+        return res
+
+
 def mylog(x):
     try:
         res = math.log(x)
@@ -60,4 +68,3 @@ def print_model_params(transition, emission, score):
     E_GC = format(emission[2]['C'], '.2f')
     score_str = format(score, '.4f')
     print(f"|\t{T_IG}\t{T_GI}\t{E_IA}\t{E_IT}\t{E_IC}\t{E_GA}\t{E_GT}\t{E_GC}\t\t{score_str}\t|")
-

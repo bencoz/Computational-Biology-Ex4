@@ -2,7 +2,7 @@ import numpy as np
 import math
 import sys
 from utils import mylog, build_emission_matrix, build_transition_matrix, print_model_params_header, \
-    print_model_params, myexp
+    print_model_params, myexp, extract_model_params
 
 
 def compute_expected_transitions_counts(s, transitions, emissions, f, b):
@@ -80,6 +80,8 @@ def baum_welch(s, transitions, emissions, epsilon):
             reach_epsilon = True
         previous_score = score
 
+    return score, extract_model_params(transitions, emissions)
+
 
 def forward(s, transitions, emissions):
     s_length = len(s)  # n.Rows
@@ -123,7 +125,7 @@ def forward(s, transitions, emissions):
         if curr > -math.inf:
             likelihood += myexp(curr)
     # print(f"forward likelihood is: {likelihood}")
-    return f.T, math.log(likelihood)
+    return f.T, mylog(likelihood)
 
 
 def backward(s, transitions, emissions):

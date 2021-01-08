@@ -1,6 +1,7 @@
 import numpy as np
 import math
-from utils import mylog, build_emission_matrix, build_transition_matrix, print_model_params_header, print_model_params
+from utils import mylog, build_emission_matrix, build_transition_matrix, print_model_params_header, print_model_params, \
+    extract_model_params
 
 
 def count_transitions_and_emissions(annotated_sequence):
@@ -64,6 +65,8 @@ def viterbi_training(s, transitions, emissions, epsilon):
         if math.fabs(score - previous_score) < epsilon:
             reach_epsilon = True
         previous_score = score
+
+    return score, extract_model_params(transitions, emissions)
 
 
 def viterbi(s, transitions, emissions):

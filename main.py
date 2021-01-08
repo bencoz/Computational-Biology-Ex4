@@ -24,7 +24,7 @@ def run_algorithm(algorithm, sequence, parameters, epsilon):
         return baum_welch(sequence, transition, emission, epsilon)
 
 
-def main(s, a):
+def main(s=None, a=None):
     # Input validation
     algorithms = ['V', 'B']
     parameters = []
@@ -51,13 +51,15 @@ def main(s, a):
     print('-' * len(sequence) * 2)
     score, final_params = run_algorithm(algorithm, sequence, parameters, epsilon)
     print('\nDone.')
-    print(f"score is: {format(score, '.2f')} and params are: {final_params}\n")
+    print(f"Score is: {format(score, '.2f')} and params are: {final_params}\n")
 
 
-# if __name__ == "__main__":
-#     main()
+"This is for running from command line"
+if __name__ == "__main__":
+    main()
 
-for i in range(0, 10):
-    s = "AAATTTTATTACGTTTAGTAGAAGAGAAAGGTAAACATGATGGTTCAGTGGTGCTAGATGAACAAACAATTATAAAATAAAATGAAGTATTTGTATAGAA"
-    algorithm = "V"
-    main(s, algorithm)
+"This is only for experiments and should be commented out for running from command line "
+# for i in range(0, 10):
+#     s = "AAATTTTATTACGTTTAGTAGAAGAGAAAGGTAAACATGATGGTTCAGTGGTGCTAGATGAACAAACAATTATAAAATAAAATGAAGTATTTGTATAGAA"
+#     algorithm = "V"
+#     main(s, algorithm)

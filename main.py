@@ -3,6 +3,8 @@ from viterbi import viterbi_training
 from baum_welch import baum_welch
 import random
 import numpy as np, numpy.random
+import math
+import datetime
 from utils import build_transition_matrix, build_emission_matrix
 
 
@@ -51,7 +53,8 @@ def main(s=None, a=None):
     print('-' * len(sequence) * 2)
     score, final_params = run_algorithm(algorithm, sequence, parameters, epsilon)
     print('\nDone.')
-    print(f"Score is: {format(score, '.2f')} and params are: {final_params}\n")
+    print(f"Score is: {format(score, '.4f')} and params are: {final_params}\n")
+    return score, final_params
 
 
 "This is for running from command line"
@@ -59,7 +62,24 @@ if __name__ == "__main__":
     main()
 
 "This is only for experiments and should be commented out for running from command line "
-# for i in range(0, 10):
-#     s = "AAATTTTATTACGTTTAGTAGAAGAGAAAGGTAAACATGATGGTTCAGTGGTGCTAGATGAACAAACAATTATAAAATAAAATGAAGTATTTGTATAGAA"
-#     algorithm = "V"
-#     main(s, algorithm)
+# best_score = -math.inf
+# best_final_params = None
+# start = datetime.datetime.now()
+# start_time = start.strftime("%H:%M:%S.%f")
+# print("Parameter inference – start time is", start_time)
+# n_total_iterations = 1000
+# for i in range(0, n_total_iterations):
+#     s = "CGCACACGTCCTTGAGGGCAGTTTTTTTGTCGCCCCCACGATTTTTCTCGGCCGCAGTTCCCGTTTTTTTTTGTTTTTTTTGTTGGCCTCTGGTTTTCTACGAGGCCGGGGAGAGGCCGGGGCGGCAGATTTTCTTGTTTTTCAGGATTGCTGGTTTGCTCAGTGTTTTTCTTCTTTGTTTGGCTGTGCCGGAAGAGATG"
+#     algorithm = "B"
+#     score, params = main(s, algorithm)
+#     if score > best_score:
+#         best_score = score
+#         best_final_params = params
+#     if (i + 1) % 100 == 0:
+#         print(f"Iteration [{i + 1}/{n_total_iterations}] had passed")
+#
+# end = datetime.datetime.now()
+# end_time = end.strftime("%H:%M:%S.%f")
+# print("Parameter inference end time is", end_time)
+# print("Parameter inference time was", str(end-start))
+# print(f"Final Best score is: {format(best_score, '.4f')}\nBest final params are: {best_final_params}\n")

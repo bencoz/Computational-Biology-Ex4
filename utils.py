@@ -58,25 +58,25 @@ def print_model_params_header(algorithm):
 
 
 def print_model_params(transition, emission, score):
-    T_IG = format(transition[0, 1], '.2f')
-    T_GI = format(transition[4, 5], '.2f')
-    E_IA = format(emission[0]['A'], '.2f')
-    E_IT = format(emission[0]['T'], '.2f')
-    E_IC = format(emission[0]['C'], '.2f')
-    E_GA = format(emission[2]['A'], '.2f')
-    E_GT = format(emission[2]['T'], '.2f')
-    E_GC = format(emission[2]['C'], '.2f')
+    T_IG = format(transition[0, 1], '.4f')
+    T_GI = format(transition[4, 5], '.4f')
+    E_IA = format(emission[0]['A'], '.4f')
+    E_IT = format(emission[0]['T'], '.4f')
+    E_IC = format(emission[0]['C'], '.4f')
+    E_GA = format(emission[2]['A'], '.4f')
+    E_GT = format(emission[2]['T'], '.4f')
+    E_GC = format(emission[2]['C'], '.4f')
     score_str = format(score, '.4f')
     print(f"|\t{T_IG}\t{T_GI}\t{E_IA}\t{E_IT}\t{E_IC}\t{E_GA}\t{E_GT}\t{E_GC}\t\t{score_str}\t|")
 
 
 def extract_model_params(transition, emission):
-    T_IG = format(transition[0, 1], '.2f')
-    T_GI = format(transition[4, 5], '.2f')
-    E_IA = format(emission[0]['A'], '.2f')
-    E_IT = format(emission[0]['T'], '.2f')
-    E_IC = format(emission[0]['C'], '.2f')
-    E_GA = format(emission[2]['A'], '.2f')
-    E_GT = format(emission[2]['T'], '.2f')
-    E_GC = format(emission[2]['C'], '.2f')
+    T_IG = format(transition[0, 1], '.4f')
+    T_GI = format(transition[4, 5], '.4f')
+    E_IA = format(emission[0]['A'], '.4f')
+    E_IT = format(emission[0]['T'], '.4f')
+    E_IC = format(emission[0]['C'], '.4f')
+    E_GA = format(emission[2]['A'], '.4f')
+    E_GT = format(emission[2]['T'], '.4f')
+    E_GC = format(emission[2]['C'], '.4f')
     return [T_IG, T_GI, E_IA, E_IT, E_IC, E_GA, E_GT, E_GC]

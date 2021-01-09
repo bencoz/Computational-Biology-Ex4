@@ -43,6 +43,16 @@ def count_transitions_and_emissions(annotated_sequence):
 
         prev_state = state_num
 
+    # To prevent dividing by zero
+    if sum_transition_from_intergenic == 0:
+        sum_transition_from_intergenic = 1
+    if sum_transition_from_gene == 0:
+        sum_transition_from_gene = 1
+    if sum_emission_int == 0:
+        sum_emission_int = 1
+    if sum_emission_gene == 0:
+        sum_emission_gene = 1
+
     return (T_IG / sum_transition_from_intergenic), (T_GI / sum_transition_from_gene), (E_IA / sum_emission_int), (
             E_IT / sum_emission_int), (E_IC / sum_emission_int), (E_GA / sum_emission_gene), (
                    E_GT / sum_emission_gene), (E_GC / sum_emission_gene)
@@ -52,9 +62,12 @@ def viterbi_training(s, transitions, emissions, epsilon):
     reach_epsilon = False
     previous_score = -math.inf
     print_model_params_header('V')
+    print_one_time = True
     while not reach_epsilon:
         annotated_sequence, score = viterbi(s, transitions, emissions)
-        print_model_params(transitions, emissions, score)
+        if print_one_time:
+            print_model_params(transitions, emissions, score)
+            print_one_time = False
 
         T_IG, T_GI, E_IA, E_IT, E_IC, E_GA, E_GT, E_GC = count_transitions_and_emissions(annotated_sequence)
 
@@ -66,6 +79,8 @@ def viterbi_training(s, transitions, emissions, epsilon):
             reach_epsilon = True
         previous_score = score
 
+    if not print_one_time:
+        print_model_params(transitions, emissions, score)
     return score, extract_model_params(transitions, emissions)
 
 
@@ -77,7 +92,7 @@ def viterbi(s, transitions, emissions):
     v[0, 0] = (math.log(1), -1)  # the tuple is to know from what i value in the previous column the maximum was chosen.
     # initialize v[0, j]
     for i in range(1, num_of_states):
-        v[i, 0] = (math.log(emissions[0].get(s[0])), -1)  # there is no previous because this is the most left column.
+        v[i, 0] = (mylog(emissions[0].get(s[0])), -1)  # there is no previous because this is the most left column.
 
     for i in range(1, len(s)):
         for j in range(0, num_of_states):

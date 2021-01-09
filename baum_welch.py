@@ -53,6 +53,12 @@ def compute_expected_emissions_counts(s, f, b):
 
     sum_gene = sum_gene_a + sum_gene_t + sum_gene_c + sum_gene_g
     sum_intergenic = sum_intergenic_a + sum_intergenic_t + sum_intergenic_c + sum_intergenic_g
+
+    # To prevent dividing by zero
+    if sum_gene == 0:
+        sum_gene = 1
+    if sum_intergenic == 0:
+        sum_intergenic = 1
     return (sum_intergenic_a / sum_intergenic), (sum_intergenic_t / sum_intergenic), (
             sum_intergenic_c / sum_intergenic), (sum_gene_a / sum_gene), (sum_gene_t / sum_gene), (
                    sum_gene_c / sum_gene)
@@ -62,12 +68,14 @@ def baum_welch(s, transitions, emissions, epsilon):
     reach_epsilon = False
     previous_score = -math.inf
     print_model_params_header('B')
+    print_one_time = True
     while not reach_epsilon:
 
         f, score = forward(s, transitions, emissions)
         b = backward(s, transitions, emissions)
-
-        print_model_params(transitions, emissions, score)
+        if print_one_time:
+            print_model_params(transitions, emissions, score)
+            print_one_time = False
 
         T_IG, T_GI = compute_expected_transitions_counts(s, transitions, emissions, f, b)
         E_IA, E_IT, E_IC, E_GA, E_GT, E_GC = compute_expected_emissions_counts(s, f, b)
@@ -80,6 +88,8 @@ def baum_welch(s, transitions, emissions, epsilon):
             reach_epsilon = True
         previous_score = score
 
+    if not print_one_time:
+        print_model_params(transitions, emissions, score)
     return score, extract_model_params(transitions, emissions)
 
 
